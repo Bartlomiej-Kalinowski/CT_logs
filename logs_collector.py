@@ -16,20 +16,23 @@ class LogCollector:
             "domain": domain,
             "message": message,
         }
-        with open(self.cf.LOG_FILE_PATH, "a+", encoding="utf-8") as f:
+        with open(self.cf.LOG_FILE_PATH, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
     def process_message(self, message, context):
+        print("RAW:", message, flush=True)
         message_type = message.get("message_type")
         print("Received:", message_type, flush=True)
         if message_type != "certificate_update":
-            return
+            print("Not a certificate update, skipping...", flush=True)
 
         data = message.get("data", {})
+        print(f"Data: {data}", flush=True)
         domains = data.get("leaf_cert", {}).get("all_domains", [])
-
+        print(f"Domains: {domains}", flush=True)
         for domain in domains:
+            print(f"Domain: {domain}", flush=True)
             if self.is_suspicious(domain):
-                pass
-            print(f"[!] Potentially suspicious domain found: {domain}", flush=True)
+                print(f"[!] Potentially suspicious domain found: {domain}", flush=True)
             self.write_logs_to_file(domain, message)
+
