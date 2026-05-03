@@ -1,1 +1,4 @@
 cert_logs.txt
+__pycache__/
+*.pyc
+*.pyo
