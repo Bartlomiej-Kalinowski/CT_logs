@@ -2,3 +2,5 @@ cert_logs.txt
 __pycache__/
 *.pyc
 *.pyo
+cert_logs.jsonl
+suspicious_domains.jsonl
