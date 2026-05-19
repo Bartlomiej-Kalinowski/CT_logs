@@ -8,9 +8,10 @@ import os
 # Wymuszenie kodowania UTF-8
 sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='ignore')
 
-def load_typosquat_domains(directory="."):
+def load_typosquat_domains():                    
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    csv_files = glob.glob(os.path.join(script_dir, "*.csv"))
     typosquats = set()
-    csv_files = glob.glob(os.path.join(directory, "*.csv"))
     
     for file_path in csv_files:
         try:
