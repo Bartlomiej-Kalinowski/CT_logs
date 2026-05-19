@@ -53,9 +53,8 @@ def load_typosquat_domains() -> set:
                     val = row.get(domain_key)
                     if val:
                         typosquats.add(val.strip().lower())
-        except Exception:
-            # Silently ignore unreadable or malformed CSV files.
-            pass
+        except Exception as e:
+            print(f"[WARNING] Could not read {file_path}: {e}", file=sys.stderr)
 
     return typosquats
 
@@ -104,7 +103,7 @@ SUSPICIOUS_TLDS = (
     '.firebaseapp.com', '.web.app'
 )
 
-pattern = re.compile('|'.join(KEYWORDS), re.IGNORECASE)
+pattern = re.compile(r'(?<![a-z])(' + '|'.join(KEYWORDS) + r')(?![a-z])', re.IGNORECASE)
 
 def is_high_risk(domain: str) -> bool:
     # Stage 0: fast-path check against the typosquatting database.
@@ -116,7 +115,7 @@ def is_high_risk(domain: str) -> bool:
     has_keyword = bool(pattern.search(domain))
 
     # Stage 2: structural risk signals.
-    is_deep      = domain.count('.') >= 3  # 4+ labels indicate suspicious sub-domain nesting
+    is_deep      = domain.count('.') >= 4  # 5+ labels indicate suspicious sub-domain nesting
     is_cheap_tld = domain.endswith(SUSPICIOUS_TLDS)
     is_punycode  = 'xn--' in domain        # Internationalized label – common in homograph attacks
 
@@ -151,12 +150,14 @@ def main():
                 # in real time rather than waiting for the buffer to fill.
                 print(domain, flush=True)
 
-        except Exception:
-            # Skip any line that causes an unexpected error and keep running.
+        except Exception as e:
+            # Log unexpected per-line errors to stderr and keep running.
+            print(f"[ERROR] {e}", file=sys.stderr)
             continue
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
+        pass
         sys.exit(0)
