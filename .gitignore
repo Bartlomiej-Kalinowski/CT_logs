@@ -1,5 +1,6 @@
-# Visual Studio
+# Visual Studio / VS Code
 .vs/
+.vscode/
 *.user
 *.suo
 *.userosscache
@@ -33,9 +34,10 @@ wheels/
 htmlcov/
 *.coveragerc
 
-# Jupyter Notebooks
-.ipynb_checkpoints/
 
 # OS
 Thumbs.db
 .DS_Store
+
+checkpoints/
+*.json
