@@ -121,12 +121,12 @@ def is_high_risk(domain: str) -> bool:
 
     # Scoring: accumulate points from all active signals.
     score = 0
-    if has_keyword: score += 2
+    if has_keyword: score += 1
     if is_deep:     score += 1
     if is_cheap_tld: score += 1
-    if is_punycode:  score += 3
+    if is_punycode:  score += 1
 
-    return score >= 2
+    return score >= 3
 
 def main():
     while True:
